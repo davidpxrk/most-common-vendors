@@ -1,27 +1,21 @@
 #### Preamble ####
-# Purpose: Cleans the raw data of Toronto's cost of living for the parameters
+# Purpose: tests the grocery price data
 # Author: Hyunje Park
-# Date: 24 September 2024
+# Date: November 14 2024
 # Contact: hyunje.park@mail.utoronto.ca 
 # Pre-requisites: 01-download_data.R, packages listed below.
 
 #### Workspace setup ####
-#install.packages('opendatatoronto')
-#install.packages("dplyr")
-#install.packages('tidyverse')
-#install.packages('sf')
-#install.packages('devtools')
+#install.packages('ggplot2')
+library(ggplot2)
 
-library(tidyverse)
-library(dplyr)
-library(testthat)
 
 # get the cleaned dataset
 cleaned_data = read_csv(here::here('data/cleaned_data/cleaned_data.csv'))
 
 
 #### Test cleaned_data ####
-### NEED TO TEST INCOME/EXPENSE IS PROPER ###
+### need to test vendor_count is proper ###
 
 # test 1 - test that it has all the columns
 test_that("Has all the columns",
@@ -34,7 +28,7 @@ test_that("Has all the columns",
 test_that("No NA values", 
           {expect_equal(sum(is.na(cleaned_data)), 0)})
 
-# test that all the Income sources are positive values
+# test that vendor_count are positive values
 # (cant have negative Income)
 test_that("All Income variables are not negative",
           {expect_true(all(cleaned_data_inverted$"vendor_count" >= 0))})
