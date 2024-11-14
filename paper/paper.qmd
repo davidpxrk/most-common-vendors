@@ -1,12 +1,12 @@
 ---
-title: "Cost of Living in Toronto"
-subtitle: "Are low-income families able to survive financially here?"
+title: "Grocery stores in Canada"
+subtitle: "What vendors hold the most items?"
 author: 
-  - Hyunje Park
+  - Hyunje Park, Charlie Zhang
 thanks: "Code and data are available at: https://github.com/davidpxrk/cost-of-living-toronto"
 date: today
 date-format: long
-abstract: "This paper analyzes the living-cost data from low-income families living in Toronto, which is hosted publicly by the Open Data Toronto. It uses information on household income, expenses, government fiscal transfers, grants and benefits to determine if low-income families are able to survive financially in Toronto. It was discovered that expenses exceeded income for most families (meaning low-income families were not able to make ends meet in Toronto), and rent, food costs were among the highest expenses. This finding is important as it shows cost disparity in expenses, and provide insights to fiscal policymakers on what areas to better support low-income families with their living costs."
+abstract: "This paper analyzes the Canadian Grocery Price data from Canadian groceryvendors, which was gathered by Jacob Filipp and hosted publicly by Project Hammer. It uses information on items, and the name of vendors to determine how many vendors hold a unique grocery item. It was discovered that expenses exceeded income for most families (meaning low-income families were not able to make ends meet in Toronto), and rent, food costs were among the highest expenses. This finding is important as it can allow more competition, hence, cooling down prices for these unique goods."
 format: pdf
 toc: true
 number-sections: true
