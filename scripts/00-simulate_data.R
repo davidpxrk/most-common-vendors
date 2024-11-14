@@ -1,18 +1,12 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from Open Data Toronto
-# Author: Hyunje Park
-# Date: 24 September 2024
+# Purpose: Simulates the vendor count is proper
+# Author: Hyunje Park, Charlie Zhang
+# Date: November 11 2024
 # Contact: hyunje.park@mail.utoronto.ca 
 # Pre-requisites: Packages listed below
 
 #### Workspace setup ####
-library(tidyverse)
-
-#### EXPECTED DATA ####
-# Columns: Income 1-11, Expense 1-6
-# 
-# All the variables contain values within the specified ranges below.
-# Determined by the average of the scenarios.
+library(ggplot2)
 
 # number of observations
 obs = 100
