@@ -6,7 +6,7 @@ author:
 thanks: "Code and data are available at: https://github.com/davidpxrk/cost-of-living-toronto"
 date: today
 date-format: long
-abstract: "This paper analyzes the Canadian Grocery Price data from Canadian groceryvendors, which was gathered by Jacob Filipp and hosted publicly by Project Hammer. It uses information on items, and the name of vendors to determine how many vendors hold a unique grocery item. It was discovered that expenses exceeded income for most families (meaning low-income families were not able to make ends meet in Toronto), and rent, food costs were among the highest expenses. This finding is important as it can allow more competition, hence, cooling down prices for these unique goods."
+abstract: "This paper analyzes the Canadian Grocery Price data from Canadian grocery vendors, which was gathered by Jacob Filipp and hosted publicly by Project Hammer. It uses information on items, and the name of vendors to determine how many vendors hold a unique grocery item. It was discovered that vendors such as Loblaws, Metro and Walmart held the most unique items at around 20,000 items, while international-focused vendors such as Galleria and T&T held the least amount of items below 10,000.
 format: pdf
 toc: true
 number-sections: true
@@ -29,249 +29,53 @@ bibliography: references.bib
 # Source: https://stackoverflow.com/questions/75906430/why-cant-i-render-any-quarto-documents-into-pdfs
 # quarto install tool tinytex
 library(ggplot2)
-library(here)
-library(knitr)
-library(opendatatoronto)
-library(tidyverse)
-library(dplyr)
-library(sf)
+
 
 ## Read the 2 cleaned CSV files ##
-cleaned_data = read_csv(here::here('data/cleaned_data/cleaned_data.csv'))
-  
-cleaned_data_inverted = read_csv(here::here('data/cleaned_data/cleaned_data_inverted.csv'))
+cleaned_data = read.csv(here::here('data/cleaned_data/cleaned_data.csv'))
 ```
 
 # Introduction
 
-Toronto is the biggest and the most populous city in Canada. As the fourth largest city in North America, Toronto serves as a catalyst when it comes to being an international hub for many businesses, arts, sports and diverse cultures, attracting people from all around the world to come to Toronto to study at some of the best institutions, work or even simply travel as a tourist. More importantly, Toronto is the most diverse city in Canada, with many people of different cultures, backgrounds, ethnicity coexist, and bridge cultural gaps and create a unity. 
+Canada is home to many international people around the world, where many people of different cultures, backgrounds, ethnicity come together to create a unity. With this in mind, it can be said that a lot different products are sold in Canada; both Canadian and international goods. 
 
-While Toronto may seem like a perfect place to live, residents have said this to be far from the truth, with many struggling financially to meet ends, especially for those from a low income background. For example, according to the Daily Bread Food Bank, `1/10` people in Toronto relied on food banks in 2023, a huge increase from `1/20` from 2022 [@citewhoshungry].
+This paper aims to analyze what grocery vendor holds the most unique product. This analysis focuses on two key metrics; the id of the product (the id that defines the product), and the name of the grocery vendor. The summation of the unique ID of the products can be used to determine how many items each vendor holds, and can help vendors compete in the grocery markets.
 
-According to the City of Toronto, the threshold for `LIM_AT` (threshold to be considered low income) was `$26,503` for 1 person household, `$37,480` for two person household and `$53,005` for a four person household [@citecityoftoronto]. `13.2%` of Toronto's population fell under this category of low-income. Furthermore, Toronto continues to have a higher rate of low income than any other regions in the GTHA at `8.09%` [@citecityoftoronto], highlighting an issue of income discrepancy.
-
-This paper aims to analyze if low income families living in Toronto are financially able to survive. The analysis focuses on two different metrics; income (which includes income from employment, government benefits and transfers such as GST/HST credit, Canada Pension Plan and Canada Worker Benefits) and expenses (which includes rent, childcare, food and transportation costs). The difference between income and expenses can assess whether or not low-income families are able to survive, and can guide future policymakers on what areas of expenses the low-income families can get additional support.
-
-The paper is organized as follows: @sec-data (Data) of this paper introduces the raw dataset of interest and some of the initial observations. @sec-results (Results) highlights some of the key insights that were derived from the data analysis. @sec-discussion (Discussion) discusses the observations from Section 3 and draws a conclusion from the findings. Finally, @sec-conclusion (Conclusion) draws a brief summary of the key findings.
+The paper is organized as follows: @sec-data (Data) introduces the grocery dataset used in this paper. @sec-results (Results) highlights important insights that were derived from the data analysis. @sec-discussion (Discussion) discusses the observations from Section 3 and some of the limitations that come with this analysis. Finally, @sec-conclusion (Conclusion) draws a summary of the key findings.
 
 # Data {#sec-data}
 
-This report uses the "About Cost of living in Toronto for low-income households" [@citeopendatatoronto] dataset, which is published publicly by the Social Development, Finance & Administration of Toronto on City of Toronto's Open Data Portal. This data contains 17 variables on income and expenses such as `employment income`, `GST/HST credits`, `pension benefits`, `rent`, `food`, `transportation costs` for 11 different scenarios of a low-income household. The 11 different scenarios of low-income household were manually selected by the City of Toronto to reflect different household characteristics that can increase the reliance on social assistance, such as type of income, single-parent household, etc. A detailed explanation of this 11 household scenarios can be found in the @sec-appendix . The dataset is also within a monthly time period, reflecting monthly income and expenses.
+This report uses the Canadian Grocery Price dataset, gathered by Jacob Filipp and hosted by Project Hammer. The dataset, contained 3 different tables, but the `product` table was specificially used for this analysis, as the other 2 tables were of no relevance.
 
-The dataset was downloaded and analyzed using the `R Programming Language` [@citeR], `opendatatoronto` [@citeopendatatoronto], `knitr` [@citeknitr], `tidyverse` [@citetidyverse], `here` [@citehere], `dplyr` [@citedplyr] and `sf` [@citesf]. 
+The `product` table contained 9 variables; most notably `id` and `vendor`. These two variables were important in this analysis, which captured the information on the product id, and the vendor that item was sold at. Data manipulation was conducted through `SQL` [@citeSQL], to select the variables `id`, `vendor`, and find the number of unique items each vendor sold. This information was exported as a `.csv` file, and the data analysis was conducted through `R Programming Language` [@citeR], `knitr` [@citeknitr],.
 
-## Overview of the Dataset
-
-The dataset published by `Social Development, Finance & Administration of Toronto` was last updated on August 2024 on an annual basis. However, the dataset uses price estimates from July 2022 - July 2023 for its income and expenses of the families. The variables chosen for this analysis were variables for the 11 households, for each entry of the income and expense types. See @fig-preview for an overview. It is noted that expenses are not visible in @fig-preview due to the long list of income that occupies the first rows.
-
-
-```{r}
-#| label: fig-preview
-#| fig-cap: "Sample of the Income/Expenses of Low Income Households in Toronto"
-#| echo: false
-
-# PREVIEW OF THE DATA
-cleaned_data[, 1:5] %>% head() %>% knitr::kable()
-```
-
-
-It is also to note that the dataset for rent prices using `Toronto Regional Real Estate Board Market Rent` was chosen. Furthermore, there were several entries in the dataset that were irrelevant, such as `percentage of rent on income`, which were filtered out.
-
-## Average Income of the 11 Households
-
-@fig-average-income shows that income from employment was the major income source for all the 11 households in Toronto by a large margin, at approximately $1603 per month. This number also falls shy below the "low-income" threshold set by the City of Toronto, which is approximately $2208.5 [@citecityoftoronto].
-
-```{r}
-#| label: fig-average-income
-#| fig-cap: "Average Income of Low Income Households in Toronto"
-#| echo: false
-
-avg_income <- filter(cleaned_data, Category == "Income")
-
-# take the average
-avg_income$"Average Income ($)" <- rowMeans(subset(avg_income, select = c("Household_1",
-                                                                           "Household_2",
-                                                                           "Household_3",
-                                                                           "Household_4",
-                                                                           "Household_5",
-                                                                           "Household_6",
-                                                                           "Household_7",
-                                                                           "Household_8",
-                                                                           "Household_9",
-                                                                           "Household_10",
-                                                                           "Household_11"
-                                                                           )))
-avg_income <- avg_income %>% select("Item", "Average Income ($)")
-
-# rename the columns to something more presentable
-colnames(avg_income) <- c("Type of Income", "Average Income ($)")
-
-#round to the nearest integer
-avg_income$"Average Income ($)" <- round(avg_income$"Average Income ($)", 0)
-avg_income %>% head(13) %>% knitr::kable()
-```
-
-The numbers may not add up properly as they were rounded to the nearest whole number.
-
-## Average Expenses of the 11 Households
-
-There is a huge price disparity between the expenses of the 11 families. The biggest expense was rent, at an average of $3146 per month, followed by food costs at $705. The huge cost rent highlights a need for further investigation and is discussed in @sec-discussion. See @fig-average-expense for an overview of the dataset. Note that all the values are rounded up and therefore may not add up to the total.
-
-```{r}
-#| label: fig-average-expense
-#| fig-cap: "Average Expenses of Low Income Households in Toronto"
-#| echo: false
-
-avg_expense <- filter(cleaned_data, Category == "Employment Deduction" |
-                                    Category == "Selected Expenses")
-
-# take the average of the expenses
-avg_expense$"Average Expense in $" <- rowMeans(subset(avg_expense, select = c("Household_1",
-                                                                           "Household_2",
-                                                                           "Household_3",
-                                                                           "Household_4",
-                                                                           "Household_5",
-                                                                           "Household_6",
-                                                                           "Household_7",
-                                                                           "Household_8",
-                                                                           "Household_9",
-                                                                           "Household_10",
-                                                                           "Household_11"
-                                                                           )))
-avg_expense <- avg_expense %>% select("Item", "Average Expense in $")
-
-# rename the columns to something more presentable
-colnames(avg_expense) <- c("Type of Expense", "Average Expense in $")
-
-#round to the nearest integer
-avg_expense$"Average Expense in $" <- round(avg_expense$"Average Expense in $", 0)
-
-# absolute value (because employment insurance is relative to income)
-avg_expense$"Average Expense in $" <- abs(avg_expense$"Average Expense in $") 
-
-avg_expense %>% head(7) %>% knitr::kable()
-```
-
-## Difference between Income and Expense
-
-To better understand the relationship between the income and expenses of the 11 families, they were merged together into a single dataset. In addition to this, a variable for their difference was also created. See @fig-income-expense for a preview of the dataset.
-
-```{r}
-#| label: fig-income-expense
-#| fig-cap: "Differenece of Income and Expenses of Low Income Households in Toronto"
-#| echo: false
-
-
-income_expense_merged <- cleaned_data_inverted
-income_expense_merged <- income_expense_merged %>% select("Total Income", "Total Expenses", "Remaining Funds")
-
-# bring back household names, deleted for some reason
-income_expense_merged$"Household" <- c("Household_1",
-                                       "Household_2",
-                                       "Household_3",
-                                       "Household_4",
-                                       "Household_5",
-                                       "Household_6",
-                                       "Household_7",
-                                       "Household_8",
-                                       "Household_9",
-                                       "Household_10",
-                                       "Household_11"
-                                       )
-
-# put the household names at the start
-income_expense_merged <- income_expense_merged %>%
-  select("Household", everything())
-
-income_expense_merged  %>% knitr::kable()
-```
-
-\newpage
 
 # Results {#sec-results}
 
-@fig-difference shows income and expense for each household. Overall, expenses exceed income for all households. Only one household had an income that exceed expenses.
+@fig-difference shows the number of unique items for each Canadian grocery vendor. Overall, Loblaws, Metro and Walmart reigned at the top, with over 20,000+ products, while international-focused chains such as Galleria or T&T had the least amount of unique products.
 
 ```{r}
 #| label: fig-difference
-#| fig-cap: "Total Income and Expenses of Low Income Households in Toronto"
+#| fig-cap: "Number of Unique Products for each Grocery Vendor"
 #| echo: false
 
-data <- data.frame(
-  Household = c("Household_1", "Household_2", "Household_3", "Household_4", 
-                "Household_5", "Household_6", "Household_7", "Household_8", 
-                "Household_9", "Household_10", "Household_11"),
-  Income = income_expense_merged$"Total Income",
-  Expenses = income_expense_merged$"Total Expenses"
-)
-
-# code idea acquired from https://stackoverflow.com/questions/10212106/creating-grouped-bar-plot-of-multi-column-data-in-r
-data_long <- data %>%
-  pivot_longer(cols = c(Income, Expenses), 
-               names_to = "Type", 
-               values_to = "Amount")
-
-
-ggplot(data_long, aes(x = Household, y = Amount, fill = Type)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Figure 1: Total Income vs Total Expenses for Each Household", 
-       x = "Household", 
-       y = "Amount in $") +
+ggplot(cleaned_data, aes(x= vendor, y = vendor_count)) +
+  geom_bar(stat = 'identity') +
+  labs(x= 'Vendor', y = 'Item Count') +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-Furthermore, @fig-breakdown gives us a better understanding of the spending behind the high expenses. Rent was by far the most expensive, comprising 66% of the expenses.
-
-```{r}
-#| label: fig-breakdown
-#| fig-cap: "Expense Breakdown of Low Income Households in Toronto"
-#| echo: false
-
-expense_disparity <- head(avg_expense, 6)
-pie(expense_disparity$'Average Expense in $', expense_disparity$'Type of Expense', main = "Figure 2: Cost Breakdown of Expenses", radius = 1, cex = 0.8) 
+   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 \newpage
 
 # Discussion {#sec-discussion}
 
-The tables and graphs above show that the expenses of these families exceed far of the income, suggesting they are not financially able to survive in Toronto. Furthermore, rent comprised 66% of the total expenses, highlighting a need for policymakers to focus on housing prices. However, this raises the question, would providing more income to these families solve their financial issues? While giving more money to these families certainly help, but having more money does not necessarily mean these families are utilizing their funds in an efficient way. For example, rent prices could differ significantly if a family chooses to reside in a less populated area and if the house contained less rooms. Furthermore, food prices can be significantly less if the families utilized low-costing grocery stores over eating out at restaurants. 
-
-Without context to this information, determining the efficiency of spending of the families is impossible. However, looking at the results suggest some inefficiencies in spending. For example, in @fig-average-expense, the average rent was $3146 per month for the 11 families, a big difference from the average rent for a one-bedroom condo of $2,529 in Toronto for Q2 of 2023 [@citerentalmarket]. Expenses such as this could suggest that expenses could be correlated with poor financial decisions, however more research must be conducted to draw those conclusions.
+The graph above show that vendors such as Metro and Walmart far exceeded the number of products compared to vendors such as Galleria, or T&T, highlighting a problem of competition for these vendors. However, this raises the question; what disadvantages do these vendors have that cause them to lag behind on products? For example, Galleria and T&T are both Asian-fusion grocery chains that rely heavily on foreign products, which could make imports very expensive, potentially explaining the lack of items that have. Without information on the types of products, commenting on the efficiency and competition on these vendors is impossible.
 
 # Conclusion {#sec-conclusion}
 
-In summary, this paper investigated the income and and expenses of 11 different low-income household scenarios in Toronto. It showed that the average expenses far exceeded the average incomes, proving it impossible for low-income families to survive in Toronto. Furthermore, rent was the biggest expense, comprising 66% of the total average income, showing that aspect the biggest need for financial aid. Further research may be required to investigate into consumer spending behaviour that could help understand the reasoning behind the high expenses.
+In summary, this paper investigated what grocery vendors in Canada held the most unique products. It showed that Metro and Walmart reigned on top, with over 20,000+ unique products, and Asian-product focused chains such as Galleria or T&T had the least amount of unique products, below 10,000. 
 
-# Appendix {#sec-appendix}
-
-## A.1 Detailed Information on the 11 Households
-
-The 11 different scenarios of low-income household were manually selected by the `City of Toronto` to reflect different household characteristics that can increase the reliance on social assistance, such as type of income, single-parent household, etc. The structure of the 11 households is as follows:
-
-`Household 1`: 2 adults (male and female ages 31-50) with no income, 2 children (unable to contribute to income).
-
-`Household 2`: 2 adults (male and female ages 31-50) with minimum wage pay ($15.00/hr), 2 children (unable to contribute to income).
-
-`Household 3`: 2 adults (male and female ages 31-50) with median income, 2 children (unable to contribute to income).
-
-`Household 4`: 1 adult (female age 31-50) with no income, 2 children (unable to contribute to income).
-
-`Household 5`: 1 adult (male age 31-50) with no income.
-
-`Household 6`: 1 adult (male age 31-50) under `Ontario Disability Support Program`, 2 children (unable to contribute to income).
-
-`Household 7`: 1 adult (female age 70+) under Old Age Security/Guaranteed Annual Income Supplement.
-
-`Household 8`: 2 adults (male and female age 31-50) under Ontario Disability Support Program.
-
-`Household 9`: 1 adult (female age 19-30) under Ontario Disability Support Program.
-
-`Household 10`: 1 adult (female age 31-50) with minimum wage pay ($15.00/hr) with 2 children (unable to contribute to income).
-
-`Household 11`: 1 adult (female age 31-50) with minimum wage pay ($15.00/hr).
-
-The children mentioned are under the mandatory working age limit and therefore unable to join the workforce.
 
 # Statement on LLMs  
 
