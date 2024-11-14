@@ -3,7 +3,7 @@ title: "Grocery stores in Canada"
 subtitle: "What vendors hold the most items?"
 author: 
   - Hyunje Park, Charlie Zhang
-thanks: "Code and data are available at: https://github.com/davidpxrk/cost-of-living-toronto"
+thanks: "Code and data are available at: https://github.com/davidpxrk/most-common-vendors"
 date: today
 date-format: long
 abstract: "This paper analyzes the Canadian Grocery Price data from Canadian grocery vendors, which was gathered by Jacob Filipp and hosted publicly by Project Hammer. It uses information on items, and the name of vendors to determine how many vendors hold a unique grocery item. It was discovered that vendors such as Loblaws, Metro and Walmart held the most unique items at around 20,000 items, while international-focused vendors such as Galleria and T&T held the least amount of items below 10,000."
