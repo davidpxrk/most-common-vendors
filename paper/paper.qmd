@@ -17,12 +17,6 @@ bibliography: references.bib
 #| include: false
 #| warning: false
 #| message: false
-#install.packages('opendatatoronto')
-#install.packages("dplyr")
-#install.packages('tidyverse')
-#install.packages('sf')
-#remove.packages('knitr')S
-#install.packages('knitr')
 #install.packages('ggplot2)
 
 # RUN THIS IN THE TERMINAL IF THERE'S AN ERROR IN EXPORTING TO PDF
