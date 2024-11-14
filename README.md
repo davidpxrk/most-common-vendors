@@ -4,6 +4,10 @@
 
 This repository contains all the files required to build the report, **Canadian grocery stores; what vendors hold the most products**. The report analyzes the grocery data of Canadian grocery stores gathered by Jacob Filipp, hosted publicly by the Project Hammer.
 
+Due to the large size of the raw data, the SQL dataset manually be downloaded here and placed into /scripts folder.
+
+Source: https://jacobfilipp.com/hammer/
+
 ## File Structure
 
 The repo is structured as:
