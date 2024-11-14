@@ -1,6 +1,6 @@
 #### Preamble ####
 # Purpose: tests the grocery price data
-# Author: Hyunje Park
+# Author: Hyunje Park, Charlie Zhang
 # Date: November 14 2024
 # Contact: hyunje.park@mail.utoronto.ca 
 # Pre-requisites: 01-download_data.R, packages listed below.
