@@ -39,7 +39,7 @@ The paper is organized as follows: @sec-data (Data) introduces the grocery datas
 
 # Data {#sec-data}
 
-This report uses the Canadian Grocery Price dataset, gathered by Jacob Filipp and hosted by Project Hammer. The dataset, contained 3 different tables, but the `product` table was specificially used for this analysis, as the other 2 tables were of no relevance.
+This report uses the Canadian Grocery Price dataset, gathered by Jacob Filipp and hosted by Project Hammer [@citedprojecthammer]. The dataset, contained 3 different tables, but the `product` table was specificially used for this analysis, as the other 2 tables were of no relevance.
 
 The `product` table contained 9 variables; most notably `id` and `vendor`. These two variables were important in this analysis, which captured the information on the product id, and the vendor that item was sold at. Data manipulation was conducted through `SQL` [@citesql], to select the variables `id`, `vendor`, and find the number of unique items each vendor sold. This information was exported as a `.csv` file, and the data analysis was conducted through `R Programming Language` [@citeR], `ggplot2` [@citeggplot2],.
 
