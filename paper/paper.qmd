@@ -1,12 +1,12 @@
 ---
 title: "Grocery stores in Canada"
-subtitle: "What vendors hold the most items?"
+subtitle: "What vendors hold the most unique items?"
 author: 
   - Hyunje Park, Charlie Zhang
 thanks: "Code and data are available at: https://github.com/davidpxrk/most-common-vendors"
 date: today
 date-format: long
-abstract: "This paper analyzes the Canadian Grocery Price data from Canadian grocery vendors, which was gathered by Jacob Filipp and hosted publicly by Project Hammer. It uses information on items, and the name of vendors to determine how many vendors hold a unique grocery item. It was discovered that vendors such as Loblaws, Metro and Walmart held the most unique items at around 20,000 items, while international-focused vendors such as Galleria and T&T held the least amount of items below 10,000."
+abstract: "This paper analyzes which Canadian grocery vendors offer the widest range of unique products using the Canadian grocery data from Project Hammer. It was discovered that Loblaws, Metro, and Walmart carry around 20,000 items each, while region-specialized vendors like Galleria and T&T offer fewer than 10,000."
 format: pdf
 toc: true
 number-sections: true
@@ -31,22 +31,21 @@ cleaned_data = read.csv(here::here('data/cleaned_data/cleaned_data.csv'))
 
 # Introduction
 
-Canada is home to many international people around the world, where many people of different cultures, backgrounds, ethnicity come together to create a unity. With this in mind, it can be said that a lot different products are sold in Canada; both Canadian and international goods. 
+Canada's diverse population supports a market rich in both Canadian and international goods. This paper analyzes which grocery vendor offers the most unique products, focusing on product IDs (which define items) and vendor names. Summing unique product IDs reveals the number of items each vendor carries, providing insights into market competitiveness.
 
-This paper aims to analyze what grocery vendor holds the most unique product. This analysis focuses on two key metrics; the id of the product (the id that defines the product), and the name of the grocery vendor. The summation of the unique ID of the products can be used to determine how many items each vendor holds, and can help vendors compete in the grocery markets.
-
-The paper is organized as follows: @sec-data (Data) introduces the grocery dataset used in this paper. @sec-results (Results) highlights important insights that were derived from the data analysis. @sec-discussion (Discussion) discusses the observations from Section 3 and some of the limitations that come with this analysis. Finally, @sec-conclusion (Conclusion) draws a summary of the key findings.
+The paper is structured as follows: Data (@sec-data) introduces the dataset; Results (@sec-results) presents key findings; Discussion (@sec-discussion) explores observations and limitations; and Conclusion (@sec-conclusion) summarizes the analysis.
 
 # Data {#sec-data}
 
-This report uses the Canadian Grocery Price dataset, gathered by Jacob Filipp and hosted by Project Hammer [@citedprojecthammer]. The dataset, contained 3 different tables, but the `product` table was specificially used for this analysis, as the other 2 tables were of no relevance.
+This report analyzes the Canadian Grocery Price dataset, collected by Jacob Filipp and hosted by Project Hammer [@citedprojecthammer]. Of the three tables in the dataset, only the product table was used, focusing on the `id` (product identifier) and `vendor` (name of the vendor) variables. 
 
-The `product` table contained 9 variables; most notably `id` and `vendor`. These two variables were important in this analysis, which captured the information on the product id, and the vendor that item was sold at. Data manipulation was conducted through `SQL` [@citesql], to select the variables `id`, `vendor`, and find the number of unique items each vendor sold. This information was exported as a `.csv` file, and the data analysis was conducted through `R Programming Language` [@citeR], `ggplot2` [@citeggplot2],.
+First, the original dataset was downloaded from `Project Hammer` [@citedprojecthammer]. Using `SQL` [@citesql], the `id` and `vendor` variables were selected, and a table was created that containing the number of unique product IDs (`id`) for each vendor. This table was then exported as a `.csv` file. The exported `.csv` file was then analyzed in `R Programming Language` [@citeR] to visualize the relationship between vendors and their unique product counts, using the `ggplot2` package [@citeggplot2].
+
 
 
 # Results {#sec-results}
 
-@fig-difference shows the number of unique items for each Canadian grocery vendor. Overall, Loblaws, Metro and Walmart reigned at the top, with over 20,000+ products, while international-focused chains such as Galleria or T&T had the least amount of unique products.
+@fig-difference shows the unique product counts for each Canadian grocery vendors. Overall, Loblaws, Metro and Walmart reigned at the top with over 20,000+ products, while international-focused chains such as Galleria or T&T had the least amount of unique products.
 
 ```{r}
 #| label: fig-difference
@@ -64,23 +63,25 @@ ggplot(cleaned_data, aes(x= vendor, y = vendor_count)) +
 
 # Discussion {#sec-discussion}
 
-The graph above show that vendors such as Metro and Walmart far exceeded the number of products compared to vendors such as Galleria, or T&T, highlighting a problem of competition for these vendors. 
+@fig-difference showed that big companies such as Metro and Walmart far passed Galleria and T&T in product variety, showing a competitive challenge for smaller vendors.
 
 ## Correlation vs Causation
 
-Larger vendors, tend to have more unique items. Walmart, for example is the biggest chain in the United States, and is also the largest company in the world by revenue, whereas vendors such as Galleria or T&T are much larger in scale. Hence, this could explain the huge difference in item catalogue.
+Larger vendors, like Walmart (the world's largest company by revenue) offer more unique items, while smaller vendors such as Galleria and T&T have a smaller revenue, which could explain the disparity in product variety.
 
 ## Missing Data
 
-There were some information on products. For example, there was a variable for `upc`, a universally global code of a product, which was missing for every product, hence this attribute was left out of the analysis. Similarly, `sku`, which is an identifier used by retailers for inventory management was left out due to the same reason.
+The `upc` (universal product code) and `sku` (inventory identifier) variables were excluded from the analysis as they were missing for all products.
 
 ## Source of bias 
 
-However, this raises the question; what disadvantages do these vendors have that cause them to lag behind on products? For example, Galleria and T&T are both Asian-fusion grocery chains that rely heavily on foreign products, which could make imports very expensive, potentially explaining the lack of items that have. Without information on the types of products, commenting on the efficiency and competition on these vendors is impossible.
+
+This raises the question of why vendors like Galleria and T&T lag in product variety. As Asian-fusion grocery chains, they rely on costly imports, which could limit their inventory. However, without data on product types, commenting on the efficiency and competition on these vendors is impossible.
+
 
 # Conclusion {#sec-conclusion}
 
-In summary, this paper investigated what grocery vendors in Canada held the most unique products. It showed that Metro and Walmart reigned on top, with over 20,000+ unique products, and Asian-product focused chains such as Galleria or T&T had the least amount of unique products, below 10,000. 
+In summary, this paper analyzed Canadian grocery vendors' product variety, finding Metro and Walmart lead with over 20,000 unique items, while chains like Galleria and T&T, focused on Asian products, have fewer than 10,000.
 
 
 # Statement on LLMs  
