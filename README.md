@@ -19,7 +19,7 @@ The repo is structured as:
 -   `scripts` contains the R scripts used to simulate, download and clean data.
 
 ## Reproducing the Tables and Graphs
-1. Download the raw data from the link above and place it in scripts folder.
+1. Download the raw data from the link above (https://jacobfilipp.com/hammer/) and place it in scripts folder.
 2. Clone this repository onto your computer
 3. Clean the data by running scripts/01-data_cleaning.SQL
 4. Run paper/paper.qmd to run the R Code for all the plots and tables.
