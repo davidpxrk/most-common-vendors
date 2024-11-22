@@ -84,10 +84,6 @@ This raises the question of why vendors like Galleria and T&T lag in product var
 In summary, this paper analyzed Canadian grocery vendors' product variety, finding Metro and Walmart lead with over 20,000 unique items, while chains like Galleria and T&T, focused on Asian products, have fewer than 10,000.
 
 
-# Statement on LLMs  
-
-LLMs and other generative AI tools were not used in the making of this paper.
-
 \newpage
 
 # References
